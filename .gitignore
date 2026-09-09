@@ -1,0 +1,3 @@
+data/jpx_replay_*.csv
+*.pyc
+__pycache__/

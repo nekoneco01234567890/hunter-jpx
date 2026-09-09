@@ -1,0 +1,7 @@
+﻿METRIC,VALUE
+SOURCE_FILES,52
+PASS_FILES,52
+FAIL_FILES,0
+FILE_AUDIT_STATUS,PASS
+RAW_OUTPUT,data/jpx_weekly_investor/jpx_weekly_investor_flow_raw.csv
+AUDIT_OUTPUT,data/jpx_weekly_investor/jpx_weekly_investor_flow_audit.csv
