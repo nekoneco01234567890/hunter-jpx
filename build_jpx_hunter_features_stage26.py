@@ -141,3 +141,35 @@ print("DUPLICATE_WEEKS  :", duplicate_weeks)
 print("MISSING_VALUES   :", missing_count)
 print("AUDIT            :", "PASS" if audit_pass else "FAIL")
 
+
+# ===== Stage26B STEP1 : Rolling Features =====
+
+ROLLING_CATS = ["海外投資家","個人","法人","金融機関","信託銀行","投資信託"]
+
+# features は WEEK順なのでそのままローリング計算できる
+for cat in ROLLING_CATS:
+
+    history = []
+
+    for row in features:
+        history.append(row[f"{cat}_CURR_NET"])
+
+        row[f"{cat}_ROLL4_NET"] = sum(history[-4:])
+        row[f"{cat}_ROLL8_NET"] = sum(history[-8:])
+        row[f"{cat}_ROLL12_NET"] = sum(history[-12:])
+
+        row[f"{cat}_MOM4"] = (
+            row[f"{cat}_CURR_NET"] -
+            (history[-5] if len(history) >= 5 else 0)
+        )
+
+# CSVを書き直す（列追加後）
+with OUTPUT.open("w", newline="", encoding="utf-8-sig") as f:
+    writer = csv.DictWriter(f, fieldnames=features[0].keys())
+    writer.writeheader()
+    writer.writerows(features)
+
+print("=== STAGE26B STEP1 PASS ===")
+print("FEATURE_ROWS :", len(features))
+print("FEATURE_COLUMNS :", len(features[0]))
+
