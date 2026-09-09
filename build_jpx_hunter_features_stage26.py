@@ -173,3 +173,56 @@ print("=== STAGE26B STEP1 PASS ===")
 print("FEATURE_ROWS :", len(features))
 print("FEATURE_COLUMNS :", len(features[0]))
 
+
+# ===== Stage26B STEP2 : Final Deep Audit =====
+
+ROLLING_COLS = [
+    c for c in features[0].keys()
+    if "_ROLL" in c or "_MOM" in c
+]
+
+rolling_missing = 0
+rolling_negative = 0
+
+for row in features:
+    for col in ROLLING_COLS:
+        value = row.get(col)
+        if value is None:
+            rolling_missing += 1
+        elif abs(value) > 1e12:   # 異常値チェック
+            rolling_negative += 1
+
+summary = [{
+    "INPUT_ROWS": len(rows),
+    "FEATURE_ROWS": len(features),
+    "FEATURE_COLUMNS": len(features[0]),
+    "ROLLING_COLUMNS": len(ROLLING_COLS),
+    "AUDIT_ROWS": len(features),
+    "MISSING_VALUES": missing_count,
+    "ROLLING_MISSING": rolling_missing,
+    "ANOMALY_VALUES": rolling_negative,
+    "DUPLICATE_WEEKS": duplicate_weeks,
+    "CATEGORY_ERRORS": category_errors
+}]
+
+with SUMMARY_OUT.open("w", newline="", encoding="utf-8-sig") as fp:
+    writer = csv.DictWriter(fp, fieldnames=summary[0].keys())
+    writer.writeheader()
+    writer.writerows(summary)
+
+stage26b_pass = (
+    missing_count == 0 and
+    duplicate_weeks == 0 and
+    category_errors == 0 and
+    rolling_missing == 0 and
+    rolling_negative == 0
+)
+
+print("========================================")
+print("HUNTER STAGE26B FINAL AUDIT")
+print("========================================")
+print("ROLLING_COLUMNS :", len(ROLLING_COLS))
+print("ROLLING_MISSING :", rolling_missing)
+print("ANOMALY_VALUES  :", rolling_negative)
+print("AUDIT           :", "PASS" if stage26b_pass else "FAIL")
+
