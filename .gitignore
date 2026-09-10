@@ -1,3 +1,18 @@
-data/jpx_replay_*.csv
-*.pyc
+# Raw market data
+*.xlsx
+*.xls
+*.zip
+
+# Termux session logs / command history
+termux_session.log
+termux_history.txt
+
+# Python cache
 __pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+
+# Generated replay / analysis data
+data/jpx_replay_*.csv
